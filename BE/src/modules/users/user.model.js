@@ -1,0 +1,20 @@
+import mongoose from "mongoose";
+import { USER_ROLE } from "../../common/consts/user-role.js";
+
+const userSchema = new mongoose.Schema({
+    username: {type: String, required: true, unique: true},
+    email: {type: String, required: true, unique: true},
+    password: {type: String, required: true},
+    phone: {type: String,default:""},  
+    role:{type:String, enum:Object.values(USER_ROLE), default:USER_ROLE.USER},
+    profilePic:{type:String, default:"https://res.cloudinary.com/djiixljr9/image/upload/v1758303040/Group%20%283%29-1758303039453.png"},
+    restricted:{type:Boolean, default:false}
+},
+{
+    timestamps:true, 
+    versionKey:false
+});
+
+const User = mongoose.model("User",userSchema);
+
+export default User;
