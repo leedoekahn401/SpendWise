@@ -7,18 +7,11 @@ import { USER_ROLE } from "../../common/consts/user-role.js";
 
 const authRouter = Router();
 
-// --- Public Routes ---
-// These routes do not require a token.
 authRouter.post("/register", validBodyReq(authRegisterSchema), authRegister);
 authRouter.post("/login", validBodyReq(authLoginSchema), authLogin);
 
-
-// --- Middleware Barrier ---
-// All routes defined BELOW this line are now protected and require a valid token.
 authRouter.use(authMiddleware);
 
-
-// --- Protected Routes for ANY Authenticated User ---
 authRouter.put("/change-pass/me", authChangeMyPassword);
 authRouter.get("/info/me", authGetMyInfo);
 
