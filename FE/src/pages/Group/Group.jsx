@@ -73,7 +73,7 @@
                     if (transactionRes?.data?.data) setTransactionList(transactionRes.data.data);
 
                 } catch (error) {
-                    console.error("Lỗi khi fetch dữ liệu nhóm:", error);
+                    console.error("Error fetching group data:", error);
                 } finally {
                     setLoading(false);
                 }

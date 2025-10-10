@@ -19,12 +19,7 @@ const validBodyReq = (schema) => {
 
                 return createResponse(res, 400, allMessages); 
             }
-<<<<<<< HEAD
-            
             console.log(error);
-=======
-            console.log(error); 
->>>>>>> ce61a98be66af0add3a9a4ac3d77e0940b2b8a36
             return createResponse(res, 500, "Internal Server Error");
         }
     }

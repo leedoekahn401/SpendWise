@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
-import instance from "../utils/instance"; // Make sure to install and import axios or use fetch
+import instance from "../utils/instance";
 import { API_PATH } from "../utils/apiPath";
+
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
@@ -13,10 +14,10 @@ const UserProvider = ({ children }) => {
 
             if (token) {
                 try {
-                    const res = await instance.get(API_PATH.AUTH.GET_INFO); 
-                    console.log(res.data.data);
+                    const res = await instance.get(API_PATH.AUTH.GET_INFO);
                     setUser(res.data.data);
                 } catch (err) {
+                    console.error("Failed to fetch user with token:", err);
                     localStorage.removeItem('token');
                     setUser(null);
                 }
@@ -27,18 +28,25 @@ const UserProvider = ({ children }) => {
         fetchUser();
     }, []);
 
-    const updateUser = (data) => {
-        setUser(data);
+    const updateUser = (newUserData) => {
+        setUser(prevUser => ({ ...prevUser, ...newUserData }));
     };
 
-    const clearUser = () => {
+    const loginUser = (userData, token) => {
+        localStorage.setItem('token', token);
+        setUser(userData);
+    };
+
+    const logoutUser = () => {
         localStorage.removeItem('token');
         setUser(null);
     };
 
     return (
-        <UserContext.Provider value={{ user, updateUser, clearUser, loading }}>
-            {!loading && children}
+        <UserContext.Provider 
+            value={{ user, loading, loginUser, logoutUser, updateUser }}
+        >
+            {children}
         </UserContext.Provider>
     );
 }

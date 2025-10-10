@@ -42,7 +42,7 @@ export const authGetInfos = handleAsync(async(req,res)=>{
 });
 
 export const authUpdateProfile = handleAsync(async(req,res)=>{
-    const user = await updateProfileService(req.body);
+    const user = await updateProfileService(req.user.id,req.body.username,req.body.email,req.body.profilePic);
     return createResponse(res,200,"Update profile successfully",user);
 });
 

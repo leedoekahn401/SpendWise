@@ -12,7 +12,6 @@ export const authLoginSchema = z.object({
 }).strict();
 
 export const authUpdateProfileSchema = z.object({
-    id: z.string(),
     username: z.string().min(3,"Username must be at least 3 characters long").max(20,"Username must be at most 20 characters long").optional(),
     email: z.email("Invalid email format").optional(),
     profilePic: z.string().optional(),

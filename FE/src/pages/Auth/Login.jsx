@@ -40,7 +40,7 @@ const Login = () => {
             }
         }catch(error){
             if(error.response && error.response.data){
-                setError(error.response.data.message);
+                setError("Email or password is incorrect");
             }else{
                 setError('Try again');
             }
@@ -49,7 +49,7 @@ const Login = () => {
 
     return (
         <AuthLayout>
-            <div className="w-full pt-10 flex justify-center">
+            <div className="w-full pt-8 flex justify-center">
               <div className="w-[60%] flex flex-col justify-center items-center bg-blue-50 rounded-2xl p-8 shadow-blue-200 shadow-lg">
                 <h3 className="text-2xl font-semibold text-black mb-4">Welcome</h3>
                 

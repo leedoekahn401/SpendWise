@@ -75,12 +75,11 @@ export const authGetInfosService = async()=>{
     }
     return users;
 }
-export const updateProfileService = async (userData) => {
-    const user = await User.findById(userData.id);
+export const updateProfileService = async (userId,username,email,profilePic) => {
+    const user = await User.findById(userId);
     if(!user){
         return throwError(404,"User not found");
     }
-    const {username,email,profilePic} = userData;
     if(username){
         user.username = username;
     }

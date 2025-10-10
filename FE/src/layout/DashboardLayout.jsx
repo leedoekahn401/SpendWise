@@ -86,38 +86,38 @@ const DashboardLayout = () => {
     };
 
     return (
-        <Layout style={{ minHeight: '100vh' }}>
-            <Header className='flex items-center justify-between shadow-md shadow-blue-200'>
-                <Link to="/"><h1 className='text-xl font-semibold text-white'>Spend Wise</h1></Link>
-                <Menu
-                    theme="dark"
-                    mode="horizontal"
-                    items={topItems}
-                    style={{ minWidth: 0, flex: 'auto', justifyContent: 'flex-end' }}
-                />
-            </Header>
-            <Layout>
-                <Sider width={200} style={{ background: colorBgContainer }} className="shadow-md shadow-blue-200">
-                    {loadingGroups ? (
-                        <div className="flex justify-center items-center h-full"><Spin /></div>
-                    ) : (
-                        <Menu
-                            mode="inline"
-                            selectedKeys={[location.pathname]}
-                            defaultOpenKeys={location.pathname.startsWith('/group') ? ['/group'] : []}
-                            style={{ height: '100%', borderRight: 0 }}
-                            items={sidebarItems}
-                            onClick={handleMenuClick}
-                        />
-                    )}
-                </Sider>
-                <Layout className="">
-                    <Content className="shadow-md shadow-blue-200 m-8 rounded-lg p-6 bg-white">
-                        <Outlet />
-                    </Content>
+            <Layout style={{ minHeight: '100vh' }}>
+                <Header className='flex items-center justify-between shadow-md shadow-blue-200'>
+                    <Link to="/"><h1 className='text-xl font-semibold text-white'>Spend Wise</h1></Link>
+                    <Menu
+                        theme="dark"
+                        mode="horizontal"
+                        items={topItems}
+                        style={{ minWidth: 0, flex: 'auto', justifyContent: 'flex-end' }}
+                    />
+                </Header>
+                <Layout>
+                    <Sider width={200} style={{ background: colorBgContainer }} className="shadow-md shadow-blue-200">
+                        {loadingGroups ? (
+                            <div className="flex justify-center items-center h-full"><Spin /></div>
+                        ) : (
+                            <Menu
+                                mode="inline"
+                                selectedKeys={[location.pathname]}
+                                defaultOpenKeys={location.pathname.startsWith('/group') ? ['/group'] : []}
+                                style={{ height: '100%', borderRight: 0 }}
+                                items={sidebarItems}
+                                onClick={handleMenuClick}
+                            />
+                        )}
+                    </Sider>
+                    <Layout className="">
+                        <Content className="shadow-md shadow-blue-200 m-8 rounded-lg p-6 bg-white">
+                            <Outlet />
+                        </Content>
+                    </Layout>
                 </Layout>
             </Layout>
-        </Layout>
     );
 };
 

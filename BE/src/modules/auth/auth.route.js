@@ -9,11 +9,11 @@ const authRouter = Router();
 
 authRouter.post("/register", validBodyReq(authRegisterSchema), authRegister);
 authRouter.post("/login", validBodyReq(authLoginSchema), authLogin);
-authRouter.put("/update-profile", validBodyReq(authUpdateProfileSchema), authUpdateProfile);
 
 authRouter.use(authMiddleware);
 
-authRouter.put("/change-pass/me", authChangeMyPassword);
+authRouter.put("/update-profile", validBodyReq(authUpdateProfileSchema), authUpdateProfile);
+authRouter.put("/change-pass", authChangeMyPassword);
 authRouter.get("/info/me", authGetMyInfo);
 authRouter.get("/avatar/me", authGetAvatar);
 
