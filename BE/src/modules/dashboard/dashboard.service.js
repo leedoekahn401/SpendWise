@@ -6,6 +6,7 @@ export const getAddUpSummaryService = async (userId, period) => {
     const { startDate, endDate } = calculateDateRange(period);
 
     const dailyData = await Transaction.aggregate([
+<<<<<<< HEAD
         {
             $match: {
                 userId: new mongoose.Types.ObjectId(userId),
@@ -21,6 +22,31 @@ export const getAddUpSummaryService = async (userId, period) => {
             }
         },
         { $sort: { _id: 1 } },
+=======
+
+        {
+            $match: {
+                userId: new mongoose.Types.ObjectId(userId), 
+                date: { $gte: startDate, $lte: endDate } 
+            }
+        },
+ 
+        {
+            $group: {
+
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                totalIncome: {
+                    $sum: { $cond: [{ $eq: ["$type", "income"] }, "$amount", 0] }
+                },
+                totalExpense: {
+                    $sum: { $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0] }
+                }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        },
+>>>>>>> ce61a98be66af0add3a9a4ac3d77e0940b2b8a36
         {
             $project: {
                 _id: 0,
@@ -34,9 +60,12 @@ export const getAddUpSummaryService = async (userId, period) => {
     const summaryMap = new Map(dailyData.map(item => [item.date, item]));
     const fullSummary = [];
     
+<<<<<<< HEAD
     let runningTotalIncome = 0;
     let runningTotalExpense = 0;
 
+=======
+>>>>>>> ce61a98be66af0add3a9a4ac3d77e0940b2b8a36
     for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
         const dateString = day.toISOString().split('T')[0];
 
@@ -44,9 +73,16 @@ export const getAddUpSummaryService = async (userId, period) => {
         let dailyExpense = 0;
 
         if (summaryMap.has(dateString)) {
+<<<<<<< HEAD
             const dayData = summaryMap.get(dateString);
             dailyIncome = dayData.income;
             dailyExpense = dayData.expense;
+=======
+            const { date, totalIncome, totalExpense } = summaryMap.get(dateString);
+            fullSummary.push({ date, totalIncome, totalExpense, surplus: totalIncome - totalExpense });
+        } else {
+            fullSummary.push({ date: dateString, totalIncome: 0, totalExpense: 0, surplus: 0 });
+>>>>>>> ce61a98be66af0add3a9a4ac3d77e0940b2b8a36
         }
 
         runningTotalIncome += dailyIncome;
@@ -381,3 +417,7 @@ export const getGroupMemberProportionsService = async (groupId, period) => {
     return result[0];
 };
 
+<<<<<<< HEAD
+=======
+            
+>>>>>>> ce61a98be66af0add3a9a4ac3d77e0940b2b8a36
