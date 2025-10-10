@@ -64,6 +64,7 @@ const AddGroup = () => {
             form.resetFields();
             setSelectedMembers([]);
             setSearchResults([]);
+            window.location.reload();  
         } catch (error) {
             notification.error({ message: "Failed to create the group. Please try again." });
         } finally {
