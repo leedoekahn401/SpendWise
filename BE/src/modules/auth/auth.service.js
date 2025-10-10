@@ -5,13 +5,7 @@ import { generateToken } from "../../common/utils/jwt.util.js";
 import mongoose from "mongoose";
 
 export const authRegisterService = async(userData)=>{
-    const {email,password} = userData;
-    const user = await User.findOne({email});
-   
-    if(user){
-         throwError(400,"Email already exists");
-    }
-    
+    const {username,email,password} = userData;
     const hashedPassword = hashPassword(password);
     const newUser = await User.create({...userData,password:hashedPassword});
     const userResponse = newUser.toObject();
@@ -29,7 +23,7 @@ export const authLoginService = async (userData) => {
 	if (!isPasswordValid) {
 		throwError(400, "Invalid credentials");
 	}
-	const accessToken = generateToken({ id: existingUser._id,role:existingUser.role});
+	const accessToken = generateToken({ id: existingUser._id,username:existingUser.username,email:existingUser.email,role:existingUser.role});
 	const userResponse = existingUser.toObject();
 	userResponse.password = undefined;
 	return { user: userResponse, accessToken };
@@ -81,4 +75,33 @@ export const authGetInfosService = async()=>{
     }
     return users;
 }
+export const updateProfileService = async (userData) => {
+    const user = await User.findById(userData.id);
+    if(!user){
+        return throwError(404,"User not found");
+    }
+    const {username,email,profilePic} = userData;
+    if(username){
+        user.username = username;
+    }
+    if(email){
+        user.email = email;
+    }
+    if(profilePic){
+        user.profilePic = profilePic;
+    }
+    await user.save();
+    const userResponse = user.toObject();
+    userResponse.password = undefined;
+    return userResponse;
+}
 
+export const getAvatarService = async (userId) => {
+    const user = await User.findById(userId, 'profilePic');
+
+    if (!user) {
+        return throwError(404, "User not found");
+    }
+    
+    return user.profilePic;
+}

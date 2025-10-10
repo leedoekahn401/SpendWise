@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true},
     phone: {type: String,default:""},  
     role:{type:String, enum:Object.values(USER_ROLE), default:USER_ROLE.USER},
-    profilePic:{type:String, default:"https://res.cloudinary.com/djiixljr9/image/upload/v1758303040/Group%20%283%29-1758303039453.png"},
+    profilePic:{type:String, default: null},
     restricted:{type:Boolean, default:false}
 },
 {

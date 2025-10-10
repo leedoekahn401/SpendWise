@@ -1,11 +1,11 @@
 import { createResponse } from "../../common/configs/response.config.js";
 import handleAsync from "../../common/utils/handle-async.util.js";
-import { createGroupService, getMyGroupService, getMyGroupsService, sendInviteService, acceptInviteService, getInvitesService } from "./group.service.js";
+import { createGroupService, getMyGroupService, getMyGroupsService, sendInvitesService, acceptInviteService, getInvitesService, findUsersService,declineInviteService } from "./group.service.js";
 
 export const createGroup = handleAsync(async(req,res)=>{
     const group = await createGroupService({
         ...req.body, // Copies all properties from req.body
-        owner: req.user.id // Adds or overwrites the owner
+        owner: req.user.id
     });
     return createResponse(res,200,"Create group successfully",group);
 })
@@ -25,12 +25,22 @@ export const acceptInvite = handleAsync(async(req,res)=>{
     return createResponse(res,200,"Accept invite successfully",invite);
 })
 
+export const findUsers = handleAsync(async(req,res)=>{
+    const users = await findUsersService(req.query.username,req.user.id);
+    return createResponse(res,200,"Find users successfully",users);
+})
+
 export const sendInvite = handleAsync(async(req,res)=>{
-    const invite = await sendInviteService({groupId:req.params.id,inviterId:req.user.id,inviteeName:req.body.inviteeName});
+    const invite = await sendInvitesService({inviterId: req.user.id,groupId: req.body.groupId, inviteesID: req.body.inviteesID});
     return createResponse(res,200,"Send invite successfully",invite);
 })
 
 export const getInvites = handleAsync(async(req,res)=>{
     const invites = await getInvitesService(req.user.id);
     return createResponse(res,200,"Get invites successfully",invites);
+})
+
+export const declineInvite = handleAsync(async(req,res)=>{
+    const invite = await declineInviteService(req.params.id,req.user.id);
+    return createResponse(res,200,"Decline invite successfully",invite);
 })

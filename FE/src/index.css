@@ -4,3 +4,25 @@
 @theme {
   --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
 }
+
+.no-scrollbar {
+  /* Cho Firefox */
+  scrollbar-width: none;
+  
+  /* Cho Internet Explorer và Edge cũ */
+  -ms-overflow-style: none;
+}
+
+/* Cho các trình duyệt dựa trên Webkit (Chrome, Safari, Edge mới, Opera) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar .ant-table-body::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar .ant-table-body {
+  scrollbar-width: none; /* Firefox */
+ -ms-overflow-style: none;  /* IE and Edge */
+}

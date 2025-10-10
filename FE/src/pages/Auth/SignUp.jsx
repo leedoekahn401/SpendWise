@@ -5,8 +5,10 @@ import { PlusOutlined } from '@ant-design/icons';
 import Input from '../../components/Input';
 import { validEmail } from '../../utils/helper';
 import AuthLayout from '../../layout/AuthLayout';
+import {API_PATH} from '../../utils/apiPath';
+import instance from '../../utils/instance';
 
-// Helper function to convert file to base64 for preview
+
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -21,41 +23,60 @@ const SignUp = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     
-    // State for the image uploader
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
-    const [fileList, setFileList] = useState([]); // Will hold the profile picture
+    const [fileList, setFileList] = useState([]);
 
     const navigate = useNavigate();
 
     const handleSignUp = async (e) => {
         e.preventDefault();
         setError('');
-
         if (!username || !email || !password) {
             setError('Please fill in all required fields');
             return;
         }
-        if (!validEmail(email)) {
-            setError('Please enter a valid email address');
-            return;
-        }
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters long');
-            return;
-        }
-        
-        const formData = new FormData();
-        formData.append('username', username);
-        formData.append('email', email);
-        formData.append('password', password);
-        // Get the actual file from the fileList state
-        if (fileList.length > 0 && fileList[0].originFileObj) {
-            formData.append('profilePic', fileList[0].originFileObj);
-        }
+    
+        try {
+            let profilePicUrl = null; 
 
-        console.log('Signing up with form data...');
-        // Example: await api.post('/auth/signup', formData);
+            const registerData = {
+                username,
+                email,
+                password,
+            };
+    
+            const response = await instance.post(API_PATH.AUTH.REGISTER, registerData);
+            if (fileList && fileList.length > 0) {
+                const imgFile = fileList[0].originFileObj;
+                const formData = new FormData();
+                formData.append('avatar', imgFile);
+    
+                const uploadResponse = await instance.post(
+                    API_PATH.UPLOAD.AVATAR,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+                profilePicUrl = uploadResponse.data.url;
+            }
+            if(profilePicUrl){
+                const updateResponse = await instance.put(API_PATH.AUTH.UPDATE_PROFILE, {id:response.data.data._id, profilePic: profilePicUrl });
+            }
+            navigate('/login');
+    
+        } catch (error) {
+            console.error("Registration failed:", error);
+
+            if (error.response && error.response.data && error.response.data.message) {
+                setError(error.response.data.message);
+            } else {
+                setError("An unexpected error occurred. Please try again.");
+            }
+        }
     };
 
     const handlePreview = async (file) => {
@@ -71,16 +92,18 @@ const SignUp = () => {
     };
 
     const beforeUpload = (file) => {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-        if (!isJpgOrPng) {
-            message.error('You can only upload JPG/PNG files!');
+        const isImage = file.type.startsWith('image/');
+        if (!isImage) {
+            message.error('You can only upload image files!');
         }
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
             message.error('Image must be smaller than 2MB!');
         }
-        // Return false to prevent automatic upload, we handle it on form submission
-        return false;
+        if (isImage && isLt2M) {
+            return false;
+        }
+        return Upload.LIST_IGNORE;
     };
 
     const uploadButton = (
@@ -99,9 +122,9 @@ const SignUp = () => {
                 </h2>
 
                 <form onSubmit={handleSignUp} className="w-full max-w-sm flex flex-col">
-                    {/* Profile Picture Upload Section */}
                     <div className="flex flex-col items-center">
-                        <Upload
+                        <Upload 
+                            accept="image/*"
                             listType="picture-circle"
                             fileList={fileList}
                             onPreview={handlePreview}
@@ -156,8 +179,6 @@ const SignUp = () => {
                         Log in
                     </Link> 
                 </p>
-
-                {/* Hidden Image component for the preview modal */}
                 {previewImage && (
                     <Image
                         wrapperStyle={{ display: 'none' }}

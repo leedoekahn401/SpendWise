@@ -1,6 +1,6 @@
 import { createResponse } from "../configs/response.config.js";
 
-import { ZodError } from "zod"; // <-- Import ZodError
+import { ZodError } from "zod"; 
 
 const validBodyReq = (schema) => {
     return (req, res, next) => {
@@ -9,21 +9,18 @@ const validBodyReq = (schema) => {
             req.body = data;
             next();
         } catch (error) {
-            // Check if the error is a ZodError
             if (error instanceof ZodError) {
                 const allMessages = error.issues
                     .map((issue) => {
-                        // Join nested paths with a dot, e.g., "user.address"
                         const path = issue.path.join('.'); 
                         return `${path}: ${issue.message}`;
                     })
-                    .join("; "); // Join multiple errors with a semicolon and space
+                    .join("; "); 
 
-                return createResponse(res, 400, allMessages); // Use return to stop execution
+                return createResponse(res, 400, allMessages); 
             }
             
-            // Handle other types of errors
-            console.log(error); // Log unexpected errors for debugging
+            console.log(error);
             return createResponse(res, 500, "Internal Server Error");
         }
     }

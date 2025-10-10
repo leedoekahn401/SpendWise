@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --experimental-specifier-resolution=node index.js"
+    "dev": "nodemon --experimental-specifier-resolution=node -L index.js"
   },
   "keywords": [],
   "author": "",

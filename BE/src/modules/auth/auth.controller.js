@@ -1,5 +1,5 @@
 import { createResponse } from "../../common/configs/response.config.js";
-import { authRegisterService, authLoginService, authGetInfoService,authChangePasswordService,authGetInfosService } from "./auth.service.js";
+import { authRegisterService, authLoginService, authGetInfoService,authChangePasswordService,authGetInfosService,updateProfileService,getAvatarService } from "./auth.service.js";
 import handleAsync from "../../common/utils/handle-async.util.js";
 
 
@@ -39,4 +39,14 @@ export const authGetInfo = handleAsync(async(req,res)=>{
 export const authGetInfos = handleAsync(async(req,res)=>{
     const users = await authGetInfosService();
     return createResponse(res,200,"Get info successfully",users);
+});
+
+export const authUpdateProfile = handleAsync(async(req,res)=>{
+    const user = await updateProfileService(req.body);
+    return createResponse(res,200,"Update profile successfully",user);
+});
+
+export const authGetAvatar = handleAsync(async(req,res)=>{
+    const avatar = await getAvatarService(req.user.id);
+    return createResponse(res,200,"Get avatar successfully",avatar);
 });
